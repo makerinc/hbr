@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.6'
+ruby '2.6.5'
 
 group :development, :test do
   gem "toml-rb"
@@ -9,7 +9,7 @@ group :development, :test do
   gem "rspec-core"
   gem "rspec-expectations"
   gem "excon"
-  gem "rake"
+  gem "rake", '12.3.3'
   gem "parallel_tests"
   gem 'rspec-retry'
   gem 'json'
