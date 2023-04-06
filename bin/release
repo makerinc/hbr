@@ -16,4 +16,4 @@ if [[ -f "${RELEASE_FILE}" ]]; then
   cat "${RELEASE_FILE}"
 fi
 
-ln -s /etc/ssl /app/openssl/ssl
+#ln -s /etc/ssl /app/openssl/ssl
