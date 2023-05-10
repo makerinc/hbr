@@ -30,9 +30,9 @@ module LanguagePack
       curl = curl_command("#{@host_url.join(path)} -s -o")
 
       topic("curl: #{curl}")
-      if path.include?("ruby-2.6.5")
-        curl = curl_command("https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/heroku-18/ruby-2.6.5.tgz -s -o")
-      end
+      # if path.include?("ruby-2.6.5")
+      #   curl = curl_command("https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/heroku-18/ruby-2.6.5.tgz -s -o")
+      # end
 
       run! "#{curl} - | tar zxf - #{files_to_extract}",
         error_class: FetchError,
