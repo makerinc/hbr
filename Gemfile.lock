@@ -3,6 +3,7 @@ GEM
   specs:
     ci-queue (0.20.5)
     citrus (3.0.2)
+    dead_end (4.0.0)
     diff-lcs (1.4.4)
     erubis (2.7.0)
     excon (0.76.0)
@@ -49,11 +50,12 @@ PLATFORMS
 
 DEPENDENCIES
   ci-queue
+  dead_end
   excon
   heroku_hatchet
   json
   parallel_tests
-  rake (= 12.3.3)
+  rake
   redis
   rspec-core
   rspec-expectations
@@ -64,4 +66,4 @@ RUBY VERSION
    ruby 3.1.2p20
 
 BUNDLED WITH
-   1.17.3
+   2.4.13

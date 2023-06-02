@@ -1,3 +1,5 @@
+require 'delegate'
+
 # frozen_string_literal: true
 #
 # This is a helper class, it wraps a pathname object
