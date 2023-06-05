@@ -49,9 +49,9 @@ class LanguagePack::Helpers::RakeRunner
         cmd = "rake #{task}"
 
         if quiet_option
-          self.output = run("rake #{task} --trace", options)
+          self.output = run("rake #{task}", options)
         else
-          self.output = pipe("rake #{task} --trace", options)
+          self.output = pipe("rake #{task}", options)
         end
       end
       self.time = time
@@ -81,16 +81,10 @@ class LanguagePack::Helpers::RakeRunner
     @rakefile_can_load
   end
 
-  def instrument(*args, &block)
-    LanguagePack::Instrument.instrument(*args, &block)
-  end
-
   def load_rake_tasks(options = {})
-    instrument "ruby.rake_task_defined" do
-      @rake_tasks        ||= RakeTask.new("-P --trace").invoke(options.merge(quiet: true)).output
-      @rakefile_can_load ||= $?.success?
-      @rake_tasks
-    end
+    @rake_tasks        ||= RakeTask.new("-P --trace").invoke(options.merge(quiet: true)).output
+    @rakefile_can_load ||= $?.success?
+    @rake_tasks
   end
 
   def load_rake_tasks!(options = {}, raise_on_fail = false)
