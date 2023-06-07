@@ -18,7 +18,7 @@ class LanguagePack::Base
   include LanguagePack::ShellHelpers
   extend LanguagePack::ShellHelpers
 
-  VENDOR_URL           = ENV['BUILDPACK_VENDOR_URL'] || "https://s3-external-1.amazonaws.com/heroku-buildpack-ruby"
+  VENDOR_URL           = ENV['BUILDPACK_VENDOR_URL'] || "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com"
   DEFAULT_LEGACY_STACK = "cedar"
   ROOT_DIR             = File.expand_path("../../..", __FILE__)
 
@@ -28,26 +28,16 @@ class LanguagePack::Base
   # @param [String] the path of the build dir
   # @param [String] the path of the cache dir this is nil during detect and release
   def initialize(build_path, cache_path = nil, layer_dir=nil)
-     self.class.instrument "base.initialize" do
-      @build_path    = build_path
-      @stack         = ENV.fetch("STACK")
-      @cache         = LanguagePack::Cache.new(cache_path)
-      @metadata      = LanguagePack::Metadata.new(@cache)
-      @bundler_cache = LanguagePack::BundlerCache.new(@cache, @stack)
-      @id            = Digest::SHA1.hexdigest("#{Time.now.to_f}-#{rand(1000000)}")[0..10]
-      @fetchers      = {:buildpack => LanguagePack::Fetcher.new(VENDOR_URL) }
-      @layer_dir     = layer_dir
+    @build_path    = build_path
+    @stack         = ENV.fetch("STACK")
+    @cache         = LanguagePack::Cache.new(cache_path)
+    @metadata      = LanguagePack::Metadata.new(@cache)
+    @bundler_cache = LanguagePack::BundlerCache.new(@cache, @stack)
+    @id            = Digest::SHA1.hexdigest("#{Time.now.to_f}-#{rand(1000000)}")[0..10]
+    @fetchers      = {:buildpack => LanguagePack::Fetcher.new(VENDOR_URL) }
+    @layer_dir     = layer_dir
 
-      Dir.chdir build_path
-    end
-  end
-
-  def instrument(*args, &block)
-    self.class.instrument(*args, &block)
-  end
-
-  def self.instrument(*args, &block)
-    LanguagePack::Instrument.instrument(*args, &block)
+    Dir.chdir build_path
   end
 
   def self.===(build_path)
@@ -82,40 +72,36 @@ class LanguagePack::Base
   # this is called to build the slug
   def compile
     write_release_yaml
-    instrument 'base.compile' do
+    Kernel.puts ""
+    warnings.each do |warning|
+      Kernel.puts "\e[1m\e[33m###### WARNING:\e[0m"# Bold yellow
       Kernel.puts ""
-      warnings.each do |warning|
-        Kernel.puts "\e[1m\e[33m###### WARNING:\e[0m"# Bold yellow
-        Kernel.puts ""
-        puts warning
-        Kernel.puts ""
-      end
-      if deprecations.any?
-        topic "DEPRECATIONS:"
-        puts @deprecations.join("\n")
-      end
+      puts warning
       Kernel.puts ""
     end
+    if deprecations.any?
+      topic "DEPRECATIONS:"
+      puts @deprecations.join("\n")
+    end
+    Kernel.puts ""
     mcount "success"
   end
 
   def build
     write_release_toml
-    instrument 'base.compile' do
+    Kernel.puts ""
+    warnings.each do |warning|
+      Kernel.puts "\e[1m\e[33m###### WARNING:\e[0m"# Bold yellow
       Kernel.puts ""
-      warnings.each do |warning|
-        Kernel.puts "\e[1m\e[33m###### WARNING:\e[0m"# Bold yellow
-        Kernel.puts ""
-        puts warning
-        Kernel.puts ""
-        Kernel.puts ""
-      end
-      if deprecations.any?
-        topic "DEPRECATIONS:"
-        puts @deprecations.join("\n")
-      end
+      puts warning
+      Kernel.puts ""
       Kernel.puts ""
     end
+    if deprecations.any?
+      topic "DEPRECATIONS:"
+      puts @deprecations.join("\n")
+    end
+    Kernel.puts ""
     mcount "success"
   end
 
@@ -206,11 +192,11 @@ private ##################################
   def setup_language_pack_environment
   end
 
-  def add_to_profiled(string)
+  def add_to_profiled(string, filename: "ruby.sh", mode: "a")
     profiled_path = @layer_dir ? "#{@layer_dir}/ruby/profile.d/" : "#{build_path}/.profile.d/"
 
     FileUtils.mkdir_p profiled_path
-    File.open("#{profiled_path}/ruby.sh", "a") do |file|
+    File.open("#{profiled_path}/#{filename}", mode) do |file|
       file.puts string
     end
   end
