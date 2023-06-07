@@ -5,15 +5,9 @@ set -euo pipefail
 BUILD_DIR="${1:-}"
 RELEASE_FILE="${BUILD_DIR}/tmp/heroku-buildpack-release-step.yml"
 
-# export PATH=$PATH:$HOME/vendor/bin
-# cp -r openssl/ vendor/
-# export LD_LIBRARY_PATH=/app/openssl/lib/
-
 # Whilst the release file is always written by the buildpack, some apps use
 # third-party slug cleaner buildpacks to remove this and other files, so we
 # cannot assume it still exists by the time the release step runs.
 if [[ -f "${RELEASE_FILE}" ]]; then
   cat "${RELEASE_FILE}"
 fi
-
-#ln -s /etc/ssl /app/openssl/ssl
