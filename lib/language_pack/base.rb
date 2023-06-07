@@ -8,7 +8,6 @@ require "language_pack/helpers/bundler_cache"
 require "language_pack/helpers/layer"
 require "language_pack/metadata"
 require "language_pack/fetcher"
-require "language_pack/instrument"
 
 Encoding.default_external = Encoding::UTF_8 if defined?(Encoding)
 ENV["BPLOG_PREFIX"] = "buildpack.ruby"
